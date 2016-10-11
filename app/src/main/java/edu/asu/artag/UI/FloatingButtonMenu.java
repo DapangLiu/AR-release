@@ -93,6 +93,7 @@ public class FloatingButtonMenu extends Fragment {
                 //fab2.setVisibility(View.VISIBLE);
                // Toast.makeText(getActivity(), "btn3", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(),GalleryActivity.class);
+                intent.putExtra("email",((MapsActivity)getActivity()).getEmail());
                 startActivity(intent);
             }
         });
@@ -103,6 +104,7 @@ public class FloatingButtonMenu extends Fragment {
                 //fab2.setVisibility(View.VISIBLE);
                 // Toast.makeText(getActivity(), "btn3", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(),ScoreActivity.class);
+                intent.putExtra("email",((MapsActivity)getActivity()).getEmail());
                 startActivity(intent);
             }
         });

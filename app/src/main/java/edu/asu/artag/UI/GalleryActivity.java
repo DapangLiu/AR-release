@@ -48,6 +48,7 @@ public class GalleryActivity extends AppCompatActivity {
     public static final int REFRESH_DELAY = 2000;
     private RequestQueue mRequestQueue;
     private StringRequest mStringRequest;
+    private String mEmail;
 
 
     @Override
@@ -76,6 +77,8 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent = getIntent();
+        mEmail = intent.getStringExtra("email");
 
         // showLoading by default
         showLoading();
@@ -192,7 +195,7 @@ public class GalleryActivity extends AppCompatActivity {
                     throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
 
-                hashMap.put("email", "cositan4lrb@gmail.com");
+                hashMap.put("email", mEmail);
                 return hashMap;
             }
         };

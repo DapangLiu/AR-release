@@ -188,6 +188,10 @@ public class PlaceActivity extends AppCompatActivity implements FloatingProgress
         mRequestQueue.add(mStringRequest);
     }
 
+    @Override
+    public void startScreenShot() {
+
+    }
 
 
     /**
@@ -210,7 +214,7 @@ public class PlaceActivity extends AppCompatActivity implements FloatingProgress
             e.printStackTrace();
         }
         bytes = output.toByteArray();
-        mEncoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+        mEncoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
 
         encodedFinal = mEncoded.replaceAll(System.getProperty("line.separator"), " ");
     }
@@ -225,7 +229,7 @@ public class PlaceActivity extends AppCompatActivity implements FloatingProgress
     public void savePic() throws IOException {
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), System.currentTimeMillis() + "pic.jpg");
         OutputStream stream = new FileOutputStream(file);
-        mPaintBoard.saveBitmap(stream);
+        mPaintBoard.saveBitmap(stream, PlaceActivity.this);
         stream.close();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

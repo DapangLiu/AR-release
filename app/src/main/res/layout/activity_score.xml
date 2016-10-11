@@ -23,7 +23,7 @@
         android:textSize="150sp"/>
 
     <TextView
-        android:text="Loading..."
+        android:text="Your Score is:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/score"

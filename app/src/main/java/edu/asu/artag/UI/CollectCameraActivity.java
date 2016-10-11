@@ -1,18 +1,33 @@
 package edu.asu.artag.UI;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.hardware.Camera;
+import android.hardware.display.DisplayManager;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -33,14 +48,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import edu.asu.artag.Data.CameraPaintBoard.CameraView;
 import edu.asu.artag.Data.CameraPaintBoard.PaintBoard;
 import edu.asu.artag.R;
 
+import static android.R.attr.width;
+
+
+
 public class CollectCameraActivity extends AppCompatActivity implements FloatingProgressButton.handleFPBclick{
 
+    private static final int REQUEST_MEDIA_PROJECTION = 66;
     private String mEmail;
     private String mTagID;
 
@@ -48,19 +69,30 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
     private Camera mCamera;
     private CameraView mPreview;
     private PaintBoard mPaintBoard;
+    private Display mDisplay;
 
     private File file;
     private String mEncoded;
     private String encodedFinal;
+    private int mResultCode;
+    private Intent mResultData;
+
+
 
     private Context mContext;
     private RequestQueue mRequestQueue;
     private StringRequest mStringRequest;
 
+    private int mWidth;
+    private int mHeight;
     public boolean mFlag_Place;
     private FragmentManager mFragmentManager;
     private String mTagImageURL;
-
+    private MediaProjectionManager mMediaProjectionManager;
+    private MediaProjection mMediaProjection;
+    private ImageReader mImageReader;
+    private int mScreenDensity;
+    private Handler mHandler;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -79,12 +111,26 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
 
         mPaintBoard = (PaintBoard) findViewById(R.id.paint_board);
 
+
         FloatingProgressButton fpb_fragment = new FloatingProgressButton();
         mFragmentManager = getFragmentManager();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.add(R.id.activity_collect_camera,fpb_fragment);
 
         ft.commit();
+
+        mMediaProjectionManager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
+
+        // start capture handling thread
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                mHandler = new Handler();
+                Looper.loop();
+            }
+        }.start();
 
 
         mContext = this;
@@ -130,6 +176,57 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+            if (resultCode != Activity.RESULT_OK) {
+                Log.i("ScreenShot", "User cancelled");
+                Toast.makeText(this, "You need grant it.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (this == null) {
+                return;
+            }
+            Log.i("ScreenShot", "Starting screen capture");
+            mResultCode = resultCode;
+            mResultData = data;
+
+            setUpMediaProjection();
+            setUpVirtualDisplay();
+        }
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUpMediaProjection() {
+        mMediaProjection = mMediaProjectionManager.getMediaProjection(mResultCode, mResultData);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        mScreenDensity = metrics.densityDpi;
+        mDisplay = getWindowManager().getDefaultDisplay();
+    }
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUpVirtualDisplay() {
+
+        Point size = new Point();
+        mDisplay.getSize(size);
+        mWidth = size.x;
+        mHeight = size.y;
+
+        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+
+        mMediaProjection.createVirtualDisplay("screen-mirror", mWidth, mHeight, mScreenDensity,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, mHandler);
+        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
+    }
+
 
     @Override
     public void VolleyUpload() {
@@ -174,6 +271,11 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
         mRequestQueue.add(mStringRequest);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void startScreenShot() {
+        startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(),REQUEST_MEDIA_PROJECTION);
+    }
 
 
     /**
@@ -196,9 +298,11 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
             e.printStackTrace();
         }
         bytes = output.toByteArray();
-        mEncoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+        mEncoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
 
         encodedFinal = mEncoded.replaceAll(System.getProperty("line.separator"), " ");
+
+        VolleyUpload();
     }
 
 
@@ -207,12 +311,78 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
      * save the pic painted by user
      * @throws IOException
      */
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void savePic() throws IOException {
+
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), System.currentTimeMillis() + "pic.jpg");
-        OutputStream stream = new FileOutputStream(file);
-        mPaintBoard.saveBitmap(stream);
-        stream.close();
+
+        Image image = null;
+        FileOutputStream stream = null;
+        Bitmap bmp = null;
+
+        try {
+            image = mImageReader.acquireLatestImage();
+            if(image != null) {
+                final Image.Plane[] planes = image.getPlanes();
+                final ByteBuffer buffer = planes[0].getBuffer();
+                int pixelStride = planes[0].getPixelStride();
+                int rowStride = planes[0].getRowStride();
+                int rowPadding = rowStride - pixelStride * mWidth;
+                // create bitmap
+                bmp = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
+                bmp.copyPixelsFromBuffer(buffer);
+
+                stream = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stream!=null) {
+                try {
+                    stream.close();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mMediaProjection != null) {
+                                mMediaProjection.stop();
+                            }
+                        }
+                    });
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+
+            if (bmp!=null) {
+                bmp.recycle();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mMediaProjection != null) {
+                            mMediaProjection.stop();
+                        }
+                    }
+                });
+            }
+
+            if (image!=null) {
+                image.close();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mMediaProjection != null) {
+                            mMediaProjection.stop();
+                        }
+                    }
+                });
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent mediaScanIntent = new Intent(
@@ -229,6 +399,20 @@ public class CollectCameraActivity extends AppCompatActivity implements Floating
 
         Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
 
+        base64Encode();
+
+    }
+
+    private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onImageAvailable(ImageReader reader) {
+            try {
+                savePic();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean isFlag_Place() {

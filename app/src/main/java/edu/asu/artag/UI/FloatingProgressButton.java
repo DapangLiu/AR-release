@@ -29,9 +29,10 @@ public class FloatingProgressButton extends Fragment {
 
     public interface handleFPBclick {
 
-        public void savePic() throws IOException;
-        public void base64Encode() throws FileNotFoundException;
-        public void VolleyUpload();
+        void savePic() throws IOException;
+        void base64Encode() throws FileNotFoundException;
+        void VolleyUpload();
+        void startScreenShot();
 
     }
 
@@ -63,10 +64,12 @@ public class FloatingProgressButton extends Fragment {
                 fgb.setShowProgressBackground(true);
                 increaseProgress(fgb,0);
 
+                mActivity.startScreenShot();
+
                 try {
                     mActivity.savePic();
-                    mActivity.base64Encode();
-                    mActivity.VolleyUpload();
+//                    mActivity.base64Encode();
+//                    mActivity.VolleyUpload();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

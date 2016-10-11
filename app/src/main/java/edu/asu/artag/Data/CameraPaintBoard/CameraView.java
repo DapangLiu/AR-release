@@ -4,20 +4,26 @@ package edu.asu.artag.Data.CameraPaintBoard;
 import android.content.Context;
 
 import android.hardware.Camera;
+import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
 
 
+import edu.asu.artag.UI.CollectCameraActivity;
+
 import static com.google.android.gms.wearable.DataMap.TAG;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    public Surface mSurface;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public CameraView(Context context, Camera camera) {
@@ -28,6 +34,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = getHolder();
+        mSurface = mHolder.getSurface();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -36,7 +43,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();

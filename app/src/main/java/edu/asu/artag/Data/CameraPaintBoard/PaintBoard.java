@@ -1,6 +1,7 @@
 package edu.asu.artag.Data.CameraPaintBoard;
 
 
+import android.app.Activity;
 import android.content.Context;
 
 
@@ -22,7 +23,7 @@ public class PaintBoard extends View {
 
     private Paint mPaint = null;
     private Bitmap mBitmap = null;
-    private Canvas mBitmapCanvas = null;
+    public Canvas mBitmapCanvas = null;
 
     private float startX;
     private float startY ;
@@ -38,8 +39,8 @@ public class PaintBoard extends View {
         int width = size.x;
         int height = size.y;
 
-        //mBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-        mBitmap = Bitmap.createBitmap((int)Math.floor(0.2*width),(int)Math.floor(0.2*height), Bitmap.Config.ARGB_8888);
+        mBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        //mBitmap = Bitmap.createBitmap((int)Math.floor(0.2*width),(int)Math.floor(0.2*height), Bitmap.Config.ARGB_8888);
         mBitmapCanvas = new Canvas(mBitmap);
         //mBitmapCanvas.drawColor(Color.argb(255,255,255,255));
         mPaint = new Paint();
@@ -76,10 +77,19 @@ public class PaintBoard extends View {
         }
     }
 
-    public void saveBitmap(OutputStream stream) {
-        if (mBitmap != null) {
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        }
+    public void saveBitmap(OutputStream stream, Activity activity) {
+//        if (mBitmap != null) {
+//            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+//        }
+        screenShot(activity.getWindow().getDecorView()).compress(Bitmap.CompressFormat.JPEG, 0, stream);
+    }
+
+    public Bitmap screenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
 
