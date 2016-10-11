@@ -15,9 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +41,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.asu.artag.Helper.PermissionCheckHelper;
+import edu.asu.artag.Helper.ToolbarActionItemTarget;
+import edu.asu.artag.Helper.ViewTargets;
 import edu.asu.artag.R;
 
 
@@ -70,6 +76,7 @@ public class MapsActivity extends AppCompatActivity
 
     private double mAzimuth;
     private double mAltitude;
+    private View currentLocationButton;
 
     public String getEmail() {
         return mEmail;
@@ -113,8 +120,6 @@ public class MapsActivity extends AppCompatActivity
             Intent intent = getIntent();
             mEmail = intent.getStringExtra("email");
 
-
-
             // Loading the Floating Button Fragment
             FloatingButtonMenu savedFragment = (FloatingButtonMenu) getFragmentManager().findFragmentById(R.id.fragmentHolder);
 
@@ -133,7 +138,6 @@ public class MapsActivity extends AppCompatActivity
         } else {
             setContentView(R.layout.activity_main);
         }
-
 
     }
 
@@ -331,6 +335,9 @@ public class MapsActivity extends AppCompatActivity
 //            );
 //        }
 //    }
+
+
+
 
     /**
      *

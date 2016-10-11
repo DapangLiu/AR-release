@@ -13,6 +13,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -159,5 +162,6 @@ public class FloatingButtonMenu extends Fragment {
                 menuRed.toggle(true);
             }
         });
+
     }
 }

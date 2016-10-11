@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,8 +37,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,6 +54,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -60,6 +66,8 @@ import static edu.asu.artag.UI.MapsActivity.permission_array;
 public class CollectActivity extends AppCompatActivity
         implements
         GoogleMap.OnMarkerClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnInfoWindowCloseListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -72,6 +80,7 @@ public class CollectActivity extends AppCompatActivity
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int REQ_CODE_LOCATION_PERMISSION = 2;
 
     /**
      * Flag indicating whether a requested permission has been denied after returning in
@@ -89,8 +98,17 @@ public class CollectActivity extends AppCompatActivity
     private Marker mTagMarker;
     private Marker mLastSelectedMarker;
 
+    private String mTagID1;
     private Double mTagLongitude;
     private Double mTagLatitude;
+
+    private String mTagID2;
+    private Double mTagLongitude1;
+    private Double mTagLatitude1;
+
+    private Double mTagLongitude2;
+    private Double mTagLatitude2;
+
     private GoogleApiClient mLocationClient;
     private Double mCurrentLongitude;
     private Double mCurrentLatitude;
@@ -99,6 +117,16 @@ public class CollectActivity extends AppCompatActivity
     private Double mTagAltitude;
     private ImageView mTagImageView;
     private String mEmail;
+    private View showNearbyTagsButton;
+    private LocationListener mListener;
+
+    private String mImageURL1;
+    private Double mTagAzimuth1;
+    private Double mTagAltitude1;
+
+    private String mImageURL2;
+    private Double mTagAzimuth2;
+    private Double mTagAltitude2;
 
 
     @Override
@@ -122,6 +150,9 @@ public class CollectActivity extends AppCompatActivity
 
         mLocationClient.connect();
 
+        mCurrentLatitude = null;
+        mCurrentLongitude = null;
+
         Intent intent = getIntent();
         mEmail = intent.getStringExtra("email");
 
@@ -130,6 +161,7 @@ public class CollectActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         //addMarkersToMap(mTagLocation);
 
@@ -168,7 +200,6 @@ public class CollectActivity extends AppCompatActivity
 
         if(mCurrentLatitude == null && mCurrentLongitude == null){
             Toast.makeText(mContext, "You need press the 'show my location' button first.", Toast.LENGTH_SHORT).show();
-            return;
         }else {
             VolleyPostNearTags(this);
         }
@@ -188,6 +219,14 @@ public class CollectActivity extends AppCompatActivity
                         mTagLongitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(1));
                         mTagLatitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(2));
 
+                        mTagID1 = Arrays.asList(response.split("\\s*,\\s*")).get(3);
+                        mTagLongitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(4));
+                        mTagLatitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(5));
+
+                        mTagID2 = Arrays.asList(response.split("\\s*,\\s*")).get(6);
+                        mTagLongitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(7));
+                        mTagLatitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(8));
+
                         Log.d("volley", String.valueOf(mTagLatitude));
                         Log.d("volley", String.valueOf(mTagLongitude));
 
@@ -195,8 +234,9 @@ public class CollectActivity extends AppCompatActivity
                             Toast.makeText(mContext, "There is no nearby tags...", Toast.LENGTH_SHORT).show();
                             return;
                         }else{
-                            VolleyPostFindTag();
-
+                            VolleyPostFindTag(mTagLongitude,mTagLatitude,mTagID);
+                            VolleyPostFindTag(mTagLongitude1,mTagLatitude1,mTagID1);
+                            VolleyPostFindTag(mTagLongitude2,mTagLatitude2,mTagID2);
                         }
 
                     }
@@ -289,6 +329,67 @@ public class CollectActivity extends AppCompatActivity
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Toast.makeText(this, R.string.status_map_ready, Toast.LENGTH_SHORT).show();
+
+        mListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+                CameraUpdate update = updateMapCamera(location);
+                mMap.animateCamera(update);
+
+
+            }
+        };
+
+        LocationRequest request = LocationRequest.create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setInterval(3000);
+        request.setFastestInterval(1000);
+
+
+        // Double check is needed
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            PermissionCheckHelper.requestPermission(this, REQ_CODE_LOCATION_PERMISSION,
+                    permission_array, true);
+        } else {
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mLocationClient, request, mListener);
+
+            Location currentLocation = LocationServices.FusedLocationApi
+                    .getLastLocation(mLocationClient);
+
+
+        }
+
+    }
+
+    private CameraUpdate updateMapCamera(Location currentLocation) {
+        LatLng latLng = new LatLng(
+                currentLocation.getLatitude(),
+                currentLocation.getLongitude()
+        );
+        return CameraUpdateFactory.newLatLngZoom(
+                latLng, 18
+        );
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mLocationClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
@@ -345,21 +446,21 @@ public class CollectActivity extends AppCompatActivity
         }
     }
 
-    private void addMarkersToMap(double latitude, double longitude) {
+    private void addMarkersToMap(double longitude, double latitude, String tagID, Double tagAzimuth, Double tagAltitude) {
 
 
-        if (mTagMarker != null) {
-
-            mTagMarker.remove();
-
-        }
+//        if (mTagMarker != null) {
+//
+//            mTagMarker.remove();
+//
+//        }
 
      LatLng tagLatlng = new LatLng(latitude, longitude);
 
             mTagMarker = mMap.addMarker(new MarkerOptions()
                 .position(tagLatlng)
-                .title("The Tag is #"+mTagID)
-                .snippet("Azimuth:"+mTagAzimuth+"\n Altitude:"+mTagAltitude)
+                .title("The Tag is #"+tagID)
+                .snippet("Azimuth:"+tagAzimuth+"\n Altitude:"+tagAltitude)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
         if(mTagMarker != null) {
@@ -437,7 +538,7 @@ public class CollectActivity extends AppCompatActivity
         return false;
     }
 
-    private void VolleyPostFindTag() {
+    private void VolleyPostFindTag(final Double Longitude,final Double Latitude, final String tagId) {
 
         String url = "http://roblkw.com/msa/findtag.php";
         mRequestQueue = Volley.newRequestQueue(mContext);
@@ -452,9 +553,8 @@ public class CollectActivity extends AppCompatActivity
                         mTagAltitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(2));
 
                         Log.d("findtag",mImageURL);
-                        Log.d("findtag", String.valueOf(mTagAltitude+mTagAzimuth));
 
-                        addMarkersToMap(mTagLatitude, mTagLongitude);
+                        addMarkersToMap(Longitude, Latitude, tagId, mTagAzimuth, mTagAltitude);
 
                     }
                 }, new Response.ErrorListener() {
@@ -468,7 +568,7 @@ public class CollectActivity extends AppCompatActivity
             protected HashMap<String, String> getParams()
                     throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
-                hashMap.put("tag_id", String.valueOf(mTagID));
+                hashMap.put("tag_id", tagId);
                 return hashMap;
             }
 

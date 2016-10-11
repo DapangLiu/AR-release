@@ -7,5 +7,4 @@
           app:showAsAction="always"
           android:onClick="showNearbyTags"/>
 
-
 </menu>
