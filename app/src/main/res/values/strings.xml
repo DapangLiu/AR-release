@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">ARtag</string>
+
+    // Sign-in String Values
+    <string name="status_signedin">Signed In</string>
+    <string name="status_notsignedin">Not Signed In</string>
+    <string name="status_notconnected">Not Connected</string>
+    <string name="status_nullresult">Null Result</string>
+    <string name="status_signincancelled">Sign In Cancelled</string>
+    <string name="status_signinfail">Sign In Failed</string>
+    <string name="status_permission_required">Oops! It seems like you deny some of required
+        permissions.
+        \nPlease grant them for better play experience~!
+    </string>
+    <string name="status_map_ready">Map is Ready!</string>
+    <string name="status_try_current_location_again">Have some trouble to get your current location,
+        try again!
+    </string>
+
+    <string name="toast_permission_required">Please grant required permissions in next dialog.
+    </string>
+
+    <string name="title_activity_maps">Map</string>
+    <string name="menu_current_location">Current Location</string>
+
+    <string name="marker_tiananmen">Marker in Tiananmen Square</string>
+    <string name="status_GMS_fail">Can\'t connect to Google Map Services</string>
+    <string name="marker_you_are_here">You are here!</string>
+    <string name="Status_Sign_In_Fails">Sign-in fails.</string>
+    <string name="String_GMS_disconnect_onStop">GMS disconnects because of onStop</string>
+    <string name="Status_Activity_onPause">Login Activity onPause</string>
+    <string name="Status_Activity_onResume">Login Activity onResume</string>
+    <string name="Status_GMS_connected">Google Play Services Connected.</string>
+    <string name="Status_GMS_suspended">Google Play Services Suspended.</string>
+    <string name="Status_GMS_connectionFailed">Could not connect to Google Play Services.</string>
+    <string name="title_activity_collect">Map</string>
+    <string name="show_nearby_tags">Show nearby tags</string>
+
+
+</resources>

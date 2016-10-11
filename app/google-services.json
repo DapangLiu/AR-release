@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "301750894943",
+    "project_id": "firebase-artag"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301750894943:android:7e90dcafbe4f84f1",
+        "android_client_info": {
+          "package_name": "edu.asu.artag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301750894943-f7lf7s2snpn13au1sfem664drqka0co4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.asu.artag",
+            "certificate_hash": "7D38305AAACDB494FA1DFEBBCF40C00F83E714D1"
+          }
+        },
+        {
+          "client_id": "301750894943-0t6eeqhgn01lrp3a255cs5jtcjvp3mbl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr-48at_H3JFrhdvVz1e0hqNE8EJl2wNA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
