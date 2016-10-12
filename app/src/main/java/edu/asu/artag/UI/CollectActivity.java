@@ -495,7 +495,7 @@ public class CollectActivity extends AppCompatActivity
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Click Info Window", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this,CollectCameraActivity.class);
+        Intent intent = new Intent(this,ImagePreview.class);
         intent.putExtra("email", mEmail);
         intent.putExtra("tag_id",mTagID);
         intent.putExtra("tagImage",mImageURL);

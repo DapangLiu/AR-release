@@ -35,6 +35,10 @@
     <string name="Status_GMS_connectionFailed">Could not connect to Google Play Services.</string>
     <string name="title_activity_collect">Map</string>
     <string name="show_nearby_tags">Show nearby tags</string>
+    <string name="string_imagePreview">Be patient! The network would be a little lagging. You could
+        try a second time if upload has no response. Anyway, all the tag drawing would be saved in
+        your Download folder.
+    </string>
 
 
 </resources>

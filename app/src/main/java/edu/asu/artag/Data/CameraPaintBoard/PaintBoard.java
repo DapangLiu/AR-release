@@ -77,11 +77,11 @@ public class PaintBoard extends View {
         }
     }
 
-    public void saveBitmap(OutputStream stream, Activity activity) {
-//        if (mBitmap != null) {
-//            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-//        }
-        screenShot(activity.getWindow().getDecorView()).compress(Bitmap.CompressFormat.JPEG, 0, stream);
+    public void saveBitmap(OutputStream stream) {
+        if (mBitmap != null) {
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        }
+        //screenShot(activity.getWindow().getDecorView()).compress(Bitmap.CompressFormat.JPEG, 0, stream);
     }
 
     public Bitmap screenShot(View view) {

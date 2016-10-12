@@ -11,13 +11,13 @@
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-    />
+        android:layout_height="fill_parent"/>
 
     <edu.asu.artag.Data.CameraPaintBoard.PaintBoard
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/paint_board"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/paint_board"/>
 
-</FrameLayout>
+    </FrameLayout>
+

@@ -66,8 +66,8 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingHolder>
     @Override
     public void onBindViewHolder(ListingHolder holder, final int position) {
         final Listing listing = mActiveListings.results[position];
-        holder.mTitleView.setText("Click Share or PlusOne to tell your friends!");
-        holder.mShopView.setText(listing.Shop.shop_name);
+        holder.mTitleView.setText("Click Share Button to tell your friends!");
+        holder.mShopView.setText("Click PlusOne Button to +1!");
         holder.mPriceView.setText(String.valueOf(position));
 
 //        List<String> mTest = new ArrayList<String>();

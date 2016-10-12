@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.asu.artag.UI.ScoreActivity"
-    android:background="?android:attr/colorPressedHighlight">
+    android:background="@drawable/scorebackground">
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,13 +20,14 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/score"
         android:textColor="@android:color/white"
-        android:textSize="150sp"/>
+        android:textSize="250sp"/>
 
     <TextView
         android:text="Your Score is:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/score"
+        android:textSize="32sp"
         android:layout_centerHorizontal="true"
         android:id="@+id/timeLabel"
         android:textColor="#80ffffff"/>
