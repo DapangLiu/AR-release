@@ -91,6 +91,9 @@ Attention! There would be several tags nearby, and our users may click her and t
 
 Great! The tag would show up in the center of the camera view. Just adjust your device and click the upload button — Congratulations! You collect it!
 
+You can then check your score in the score activity.
+
+![](https://s3.amazonaws.com/artagfinal/score.png)
 
 
 ### Social Network, a Great Idea (Extra Credits)
@@ -264,7 +267,43 @@ I stated to look through the source code of ActivityCompat.class and figure out 
 ```
 It looks like every one could do the permissions search part, and indeed there is no difference between this one and Java String compare. But this challenge tells me that, sometimes the wheel has been built, and what you should do is just to find it and not give up.
 
-### Misstep and Misunderstanding
+### Snapshot of the mixture camera view and imageview
+
+I have to admit that I misunderstood professor's meaning. Actually it is not as difficult as I thought. The only tricky part is, the camera view is a surface view and the image view could not be part of the surface view. I searched a little bit, especially some Chinese websites. It says the surface view has a different layer with the normal UI layer. So the only solution to snapshot the full screen is to snapshot.
+
+To do the snapshot, I used the MediaProjection API which is introduced in Android 5.0 API21. Its target actually is the game video sharing or other things. But here I deployed it as my snapshot tool.
+
+```java
+...
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUpMediaProjection() {
+        mMediaProjection = mMediaProjectionManager.getMediaProjection(mResultCode, mResultData);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        mScreenDensity = metrics.densityDpi;
+        mDisplay = getWindowManager().getDefaultDisplay();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUpVirtualDisplay() {
+
+        Point size = new Point();
+        mDisplay.getSize(size);
+        mWidth = size.x;
+        mHeight = size.y;
+
+        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+
+        mMediaProjection.createVirtualDisplay("screen-mirror", mWidth, mHeight, mScreenDensity,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mImageReader.getSurface(), null, mHandler);
+        mImageReader.setOnImageAvailableListener(new CollectCameraView.ImageAvailableListener(), mHandler);
+    }
+    ...
+```
+
+It works! But it really takes me some time.
+
+## Misstep and Misunderstanding
 
 I talked with professor many times about the nearby tags. At first I think there is no need to submit the users’ email when showing the nearby tags because it should have had links only with the location. But actually, the nearby tags could only show the tags you’ve not collected. In other words, the tags are stored in separate databases: one is collected and the other is uncollected. Such fact is the misunderstanding till today.
 
@@ -277,6 +316,8 @@ And I think the problem is very obvious. If I do not implement place tags functi
 1. The UI part still need polish. 
 2. I would recode the camera part because camera API v2 has been released. The reason why I did not use it currently is the new API needs Android Version Check. In other words, it could not adapt to old android devices.
 3. Do more things about lifecycle control and energy management.
+4. The tag should be more pretty.
+5. More details about the game background.
 
 I think this project is really a good sample for essential Android training. The stuff about Fragment and Activity, RecyclerView and Floating Button are all important things in nowadays development. 
 
@@ -297,6 +338,8 @@ We cut the process into three parts: To do, Doing and Done. We would focus on th
 I think I've done some parts beyond the requirement. For example, the Google Plus Share and Plus One part added social media element into our app. What's more, things like power saving, persmissions request at run time... I've got no idea whether such stuff should be part of the "required part", but in my standard, they are needed, and I made it, which I think could be the reasons for extra credits.
 
 For suggestion about AGWA API, I think the most important part to improve is the data structure. I think the String key and value pair.. yes it works. But for large quantities of data, for example, when tags become more and more, I think it would be better to use JSON Object --- for example, JSON Array to store the tags and correlative location info, user email and other stuff. It's a more friendly way to users and more wide-used method in server backend nowadays. 
+
+At last, I think I helped professor debug server code to soem extent.
 
 That's all. Really thanks professor. It’s a great experience.
 
