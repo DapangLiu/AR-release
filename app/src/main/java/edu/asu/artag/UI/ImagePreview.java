@@ -55,7 +55,7 @@ public class ImagePreview extends AppCompatActivity {
                 mButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ImagePreview.this, CollectCameraActivity.class);
+                        Intent intent = new Intent(ImagePreview.this, CollectCameraView.class);
                         intent.putExtra("email", mEmail);
                         intent.putExtra("tag_id",mTagID);
                         intent.putExtra("tagImage",mImageURL);

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_collect_success_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.asu.artag.UI.CollectSuccessView"
+    android:background="@drawable/scorebackground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/score"
+        android:textColor="@android:color/white"
+        android:textSize="250sp"/>
+
+    <TextView
+        android:text="Congratulations!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/score"
+        android:textSize="45sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#80ffffff"/>
+
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+                android:id="@+id/collected_tag"
+               android:layout_centerVertical="true"
+               android:layout_centerHorizontal="true"/>
+
+
+    <TextView
+            android:text="You successfully collect this tag!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColor="#80ffffff"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/score" android:layout_centerHorizontal="true"/>
+
+
+</RelativeLayout>

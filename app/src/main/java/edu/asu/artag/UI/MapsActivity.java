@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
@@ -98,6 +99,7 @@ public class MapsActivity extends AppCompatActivity
 
         // Check GMS service before loading
         if (checkMapService()) {
+
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
@@ -316,7 +318,7 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        mLocationClient.disconnect();
     }
 
 //    @Override
@@ -372,6 +374,9 @@ public class MapsActivity extends AppCompatActivity
         mLongitude = currentLocation.getLongitude();
         mAltitude = currentLocation.getAltitude();
         mAzimuth = currentLocation.getBearing();
+
+        Log.d("Altitude", String.valueOf(mAltitude));
+        Log.d("Azimuth", String.valueOf(mAzimuth));
     }
 
 

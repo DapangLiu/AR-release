@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ARtag</string>
+    <string name="app_name">Alien Where</string>
 
     // Sign-in String Values
     <string name="status_signedin">Signed In</string>

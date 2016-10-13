@@ -43,7 +43,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -57,35 +57,39 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.asu.artag.UI.MainActivity"/>
         </activity>
-
         <activity
             android:name=".UI.PlaceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
         </activity>
-
-        <activity android:name=".UI.GalleryActivity"
-                  android:theme="@style/AppTheme">
+        <activity
+            android:name=".UI.GalleryActivity"
+            android:theme="@style/AppTheme">
         </activity>
-
-        <activity android:name=".UI.ScoreActivity"
-                  android:theme="@style/AppThemeNoActionBar">
+        <activity
+            android:name=".UI.ScoreActivity"
+            android:theme="@style/AppThemeNoActionBar">
         </activity>
-
         <activity
             android:name=".UI.CollectActivity"
             android:label="@string/title_activity_collect"
             android:theme="@style/AppTheme">
         </activity>
-
-        <activity android:name=".UI.CollectCameraActivity"
+        <activity
+            android:name=".UI.CollectCameraActivity"
+            android:theme="@style/AppThemeNoActionBar">
+        </activity>
+        <activity
+            android:name=".UI.ImagePreview"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".UI.CollectCameraView"
+            android:theme="@style/AppThemeNoActionBar">
+        </activity>
+        <activity android:name=".UI.CollectSuccessView"
                   android:theme="@style/AppThemeNoActionBar">
         </activity>
-
-        <activity android:name=".UI.ImagePreview"
-                  android:theme="@style/AppTheme">
-        </activity>
-
     </application>
 
 </manifest>

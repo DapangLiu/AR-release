@@ -17,13 +17,14 @@
         fab:menu_labels_ellipsize="end"
         fab:menu_labels_singleLine="true"
         fab:menu_backgroundColor="#ccffffff"
-        fab:menu_fab_label="Menu label">
+        fab:menu_fab_label="Menu label"
+        >
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_edit"
+            android:src="@mipmap/ic_place"
             fab:fab_size="normal"
             fab:fab_label="Place" />
 
@@ -31,17 +32,19 @@
             android:id="@+id/fab2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_edit"
+            android:src="@mipmap/ic_collect"
             fab:fab_size="normal"
-            fab:fab_label="Collect" />
+            fab:fab_label="Collect"
+            style="@style/MenuButtonsSmallgreen"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_edit"
+            android:src="@mipmap/ic_gallery"
             fab:fab_size="normal"
-            fab:fab_label="Gallery" />
+            fab:fab_label="Gallery"
+            style="@style/MenuButtonsSmallyellow"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab4"

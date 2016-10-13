@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_collect_camera_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.asu.artag.UI.CollectCameraView">
+
+
+    <FrameLayout
+        android:id="@+id/collect_camera_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:id="@+id/tag_preview"
+               android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical|center_horizontal|center"/>
+
+
+
+</RelativeLayout>

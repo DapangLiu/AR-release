@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -127,6 +128,10 @@ public class CollectActivity extends AppCompatActivity
     private String mImageURL2;
     private Double mTagAzimuth2;
     private Double mTagAltitude2;
+    private ArrayList<String> mTagID_Array;
+    private ArrayList<Double> mTagLongitude_Array;
+    private ArrayList<Double> mTagLatitude_Array;
+    private int size;
 
 
     @Override
@@ -155,6 +160,10 @@ public class CollectActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         mEmail = intent.getStringExtra("email");
+
+        mTagLatitude_Array = new ArrayList<Double>();
+        mTagLongitude_Array = new ArrayList<Double>();
+        mTagID_Array = new ArrayList<String>();
 
     }
 
@@ -215,29 +224,53 @@ public class CollectActivity extends AppCompatActivity
                     public void onResponse(String response) {
                         System.out.println("请求结果:" + response);
 
-                        mTagID = Arrays.asList(response.split("\\s*,\\s*")).get(0);
-                        mTagLongitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(1));
-                        mTagLatitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(2));
+                   size = Arrays.asList(response.split("\\s*,\\s*")).size();
 
-                        mTagID1 = Arrays.asList(response.split("\\s*,\\s*")).get(3);
-                        mTagLongitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(4));
-                        mTagLatitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(5));
+                        if(size != 1) {
+                            int i;
+                            for (i = 0; i < size; i = i + 3) {
 
-                        mTagID2 = Arrays.asList(response.split("\\s*,\\s*")).get(6);
-                        mTagLongitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(7));
-                        mTagLatitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(8));
+                                mTagID_Array.add(Arrays.asList(response.split("\\s*,\\s*")).get(i));
+                                mTagLongitude_Array.add(Double.valueOf(Arrays.asList(response.split("\\s*,\\s*")).get(i + 1)));
+                                mTagLatitude_Array.add(Double.valueOf(Arrays.asList(response.split("\\s*,\\s*")).get(i + 2)));
 
-                        Log.d("volley", String.valueOf(mTagLatitude));
-                        Log.d("volley", String.valueOf(mTagLongitude));
+                                Log.d("volley", String.valueOf(mTagLatitude_Array));
+                                Log.d("volley", String.valueOf(mTagLongitude_Array));
 
-                        if ((mTagLatitude == null)&&(mTagLongitude == null)){
-                            Toast.makeText(mContext, "There is no nearby tags...", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            Log.d("volley", String.valueOf(mTagLatitude));
+                            Log.d("volley", String.valueOf(mTagLongitude));
+
+                            if ((mTagLatitude_Array == null)&&(mTagLongitude_Array == null)){
+                                Toast.makeText(mContext, "There is no nearby tags...", Toast.LENGTH_SHORT).show();
+                                return;
+                            }else{
+                                int j;
+                                for (j=0;j<(size/3);j++) {
+                                    VolleyPostFindTag(mTagLongitude_Array.get(j), mTagLatitude_Array.get(j), mTagID_Array.get(j));
+                                }
+                            }
+
+                        } else {
+
+                            Toast.makeText(CollectActivity.this, "Sorry! There is no nearby tags!",Toast.LENGTH_SHORT).show();
                             return;
-                        }else{
-                            VolleyPostFindTag(mTagLongitude,mTagLatitude,mTagID);
-                            VolleyPostFindTag(mTagLongitude1,mTagLatitude1,mTagID1);
-                            VolleyPostFindTag(mTagLongitude2,mTagLatitude2,mTagID2);
                         }
+
+//                        mTagID = Arrays.asList(response.split("\\s*,\\s*")).get(0);
+//                        mTagLongitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(1));
+//                        mTagLatitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(2));
+//
+//                        mTagID1 = Arrays.asList(response.split("\\s*,\\s*")).get(3);
+//                        mTagLongitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(4));
+//                        mTagLatitude1 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(5));
+//
+//                        mTagID2 = Arrays.asList(response.split("\\s*,\\s*")).get(6);
+//                        mTagLongitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(7));
+//                        mTagLatitude2 = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(8));
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -252,8 +285,8 @@ public class CollectActivity extends AppCompatActivity
                     throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("email", mEmail);
-                hashMap.put("loc_long", "-111.9373");
-                hashMap.put("loc_lat", "33.4193");
+                hashMap.put("loc_long", String.valueOf(mCurrentLongitude));
+                hashMap.put("loc_lat", String.valueOf(mCurrentLatitude));
                 return hashMap;
             }
 
@@ -284,8 +317,8 @@ public class CollectActivity extends AppCompatActivity
                 mCurrentLatitude = currentLocation.getLatitude();
                 mCurrentLongitude = currentLocation.getLongitude();
 
-                Log.d("latitude", "33.4193");
-                Log.d("longitude", "-111.9373");
+                Log.d("latitude", String.valueOf(mCurrentLatitude));
+                Log.d("longitude", String.valueOf(mCurrentLongitude));
             }
 
         }
@@ -339,8 +372,6 @@ public class CollectActivity extends AppCompatActivity
 
                 CameraUpdate update = updateMapCamera(location);
                 mMap.animateCamera(update);
-
-
             }
         };
 
@@ -387,7 +418,7 @@ public class CollectActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        mLocationClient.disconnect();
     }
 
 
@@ -495,7 +526,7 @@ public class CollectActivity extends AppCompatActivity
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Click Info Window", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this,ImagePreview.class);
+        Intent intent = new Intent(this,CollectCameraView.class);
         intent.putExtra("email", mEmail);
         intent.putExtra("tag_id",mTagID);
         intent.putExtra("tagImage",mImageURL);

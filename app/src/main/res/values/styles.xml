@@ -38,10 +38,25 @@
     </style>
 
     <style name="MenuButtonsSmall">
-        <item name="fab_size">normal</item>
-        <item name="fab_colorNormal">#1565C0</item>
-        <item name="fab_colorPressed">#2272CD</item>
-        <item name="fab_colorRipple">#62B2FF</item>
+    <item name="fab_size">normal</item>
+    <item name="fab_colorNormal">#1565C0</item>
+    <item name="fab_colorPressed">#2272CD</item>
+    <item name="fab_colorRipple">#62B2FF</item>
     </style>
+
+    <style name="MenuButtonsSmallgreen">
+        <item name="fab_size">normal</item>
+        <item name="fab_colorNormal">#43A047</item>
+        <item name="fab_colorPressed">#2E7D32</item>
+        <item name="fab_colorRipple">#1B5E20</item>
+    </style>
+
+    <style name="MenuButtonsSmallyellow">
+        <item name="fab_size">normal</item>
+        <item name="fab_colorNormal">#FFB805</item>
+        <item name="fab_colorPressed">#F2AB00</item>
+        <item name="fab_colorRipple">#D99200</item>
+    </style>
+
 
 </resources>
