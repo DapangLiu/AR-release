@@ -171,12 +171,12 @@ public class PlaceActivity extends AppCompatActivity implements FloatingProgress
                     throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
 
-                Log.d("c",encodedFinal);
+                Log.d("c",mEncoded);
 
                 hashMap.put("email", mEmail);
                 hashMap.put("loc_long", mLoc_long.toString());
                 hashMap.put("loc_lat", mLoc_lat.toString());
-                hashMap.put("tag_img",encodedFinal);
+                hashMap.put("tag_img",mEncoded);
                 hashMap.put("orient_azimuth", mOrient_azimuth.toString());
                 hashMap.put("orient_altitude", mOrient_altitude.toString());
                 return hashMap;
@@ -217,7 +217,7 @@ public class PlaceActivity extends AppCompatActivity implements FloatingProgress
         bytes = output.toByteArray();
         mEncoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
 
-        encodedFinal = mEncoded.replaceAll(System.getProperty("line.separator"), " ");
+        //encodedFinal = mEncoded.replaceAll(System.getProperty("line.separator"), "");
 
         VolleyUpload();
     }

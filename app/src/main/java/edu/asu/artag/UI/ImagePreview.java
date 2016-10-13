@@ -1,12 +1,8 @@
 package edu.asu.artag.UI;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextPaint;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +13,6 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.squareup.picasso.Picasso;
 
-import edu.asu.artag.Helper.MultiEventListener;
 import edu.asu.artag.R;
 
 public class ImagePreview extends AppCompatActivity {

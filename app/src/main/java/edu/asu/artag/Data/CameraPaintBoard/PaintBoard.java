@@ -40,7 +40,7 @@ public class PaintBoard extends View {
         int height = size.y;
 
         mBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-        //mBitmap = Bitmap.createBitmap((int)Math.floor(0.2*width),(int)Math.floor(0.2*height), Bitmap.Config.ARGB_8888);
+        //mBitmap = Bitmap.createBitmap((int)Math.floor(0.5*width),(int)Math.floor(0.5*height), Bitmap.Config.ARGB_8888);
         mBitmapCanvas = new Canvas(mBitmap);
         //mBitmapCanvas.drawColor(Color.argb(255,255,255,255));
         mPaint = new Paint();
@@ -79,7 +79,7 @@ public class PaintBoard extends View {
 
     public void saveBitmap(OutputStream stream) {
         if (mBitmap != null) {
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         }
         //screenShot(activity.getWindow().getDecorView()).compress(Bitmap.CompressFormat.JPEG, 0, stream);
     }

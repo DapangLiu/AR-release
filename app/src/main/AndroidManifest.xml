@@ -79,7 +79,7 @@
         </activity>
 
         <activity android:name=".UI.CollectCameraActivity"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/AppThemeNoActionBar">
         </activity>
 
         <activity android:name=".UI.ImagePreview"

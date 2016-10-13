@@ -68,8 +68,8 @@ public class FloatingProgressButton extends Fragment {
 
                 try {
                     mActivity.savePic();
-//                    mActivity.base64Encode();
-//                    mActivity.VolleyUpload();
+                    mActivity.base64Encode();
+                    mActivity.VolleyUpload();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
