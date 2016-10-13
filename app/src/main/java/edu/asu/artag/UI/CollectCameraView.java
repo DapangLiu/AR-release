@@ -136,6 +136,10 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
         mTagID = intent.getStringExtra("tag_id");
         mImageURL = intent.getStringExtra("tagImage");
 
+        Log.d("Collect",mImageURL);
+        Log.d("Collect",mTagID);
+        Log.d("Collect",mEmail);
+
         Picasso.with(this)
                 .load(mImageURL)
                 .resize(400, 600)
@@ -327,7 +331,6 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
 
     @Override
     public void VolleyUpload() {
-        mFlag_Place = false;
         String url = "http://roblkw.com/msa/collecttag.php";
         mContext = this;
         mRequestQueue = Volley.newRequestQueue(mContext);
@@ -336,9 +339,8 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
                     @Override
                     public void onResponse(String response) {
                         System.out.println("请求结果:" + response);
-                        Log.d("Placetag",response);
+                        Log.d("CollectTag",response);
                         if (response.equals("0")){
-                            mFlag_Place = true;
                             Toast.makeText(CollectCameraView.this, "Upload Success", Toast.LENGTH_SHORT).show();
                             startCollectSuccess();
                         }
@@ -355,7 +357,9 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
                     throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
 
-                Log.d("c",mEncoded);
+                Log.d("Collect",mEncoded);
+                Log.d("Collect",mTagID);
+                Log.d("Collect",mEmail);
                 hashMap.put("email", mEmail);
                 hashMap.put("tag_id",mTagID);
                 hashMap.put("collect_img",mEncoded);
@@ -443,7 +447,7 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
                 bmp.copyPixelsFromBuffer(buffer);
 
                 stream = new FileOutputStream(file);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 30, stream);
             }
 
         } catch (Exception e) {
@@ -477,6 +481,7 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
                 });
             }
             base64Encode();
+
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -494,7 +499,10 @@ public class CollectCameraView extends AppCompatActivity implements FloatingProg
 
         Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
 
+
+
     }
+
 
 
 }

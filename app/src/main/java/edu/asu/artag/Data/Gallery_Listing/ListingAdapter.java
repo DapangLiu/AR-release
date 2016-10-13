@@ -96,7 +96,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingHolder>
         // Decide whether we could show the share button and the +1 button
         if(isGMSAvailable) {
             holder.mPlusOneButton.setVisibility(View.VISIBLE);
-            holder.mPlusOneButton.initialize(listing.url, RES_CODE_PLUS_ONE);
+            holder.mPlusOneButton.initialize(mImageList.get(position), RES_CODE_PLUS_ONE);
             holder.mPlusOneButton.setAnnotation(PlusOneButton.ANNOTATION_BUBBLE);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +113,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingHolder>
                 public void onClick(View v) {
                     Intent intent = new PlusShare.Builder(mActivity)
                             .setType("text/plain")
-                            .setText("Checkout this item on Etsy "+ listing.title)
+                            .setText("Click to check this tag ")
                             .setContentUrl(Uri.parse(mImageList.get(position)))
                             .getIntent();
 
@@ -130,8 +130,8 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TEXT, "Check out this item on Etsy " +
-                    listing.title + "" + mImageList.get(position));
+                    intent.putExtra(Intent.EXTRA_TEXT, "Click to check this tag " +
+                      mImageList.get(position));
                     intent.setType("text/plain");
 
                     mActivity.startActivityForResult(Intent.createChooser(intent, "Share"), RES_CODE_SHARE);

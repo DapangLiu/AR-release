@@ -287,6 +287,8 @@ public class CollectActivity extends AppCompatActivity
                 hashMap.put("email", mEmail);
                 hashMap.put("loc_long", String.valueOf(mCurrentLongitude));
                 hashMap.put("loc_lat", String.valueOf(mCurrentLatitude));
+//                hashMap.put("loc_long", "-111.9373");
+//                hashMap.put("loc_lat", "33.4193");
                 return hashMap;
             }
 
@@ -317,8 +319,6 @@ public class CollectActivity extends AppCompatActivity
                 mCurrentLatitude = currentLocation.getLatitude();
                 mCurrentLongitude = currentLocation.getLongitude();
 
-                Log.d("latitude", String.valueOf(mCurrentLatitude));
-                Log.d("longitude", String.valueOf(mCurrentLongitude));
             }
 
         }
@@ -494,6 +494,7 @@ public class CollectActivity extends AppCompatActivity
                 .snippet("Azimuth:"+tagAzimuth+"\n Altitude:"+tagAltitude)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
+
         if(mTagMarker != null) {
             adjustCamera(tagLatlng);
         }
@@ -582,6 +583,7 @@ public class CollectActivity extends AppCompatActivity
                         mImageURL = Arrays.asList(response.split("\\s*,\\s*")).get(0);
                         mTagAzimuth = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(1));
                         mTagAltitude = Double.parseDouble(Arrays.asList(response.split("\\s*,\\s*")).get(2));
+                        mTagID = tagId;
 
                         Log.d("findtag",mImageURL);
 
